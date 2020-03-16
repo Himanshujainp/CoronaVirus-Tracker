@@ -18,21 +18,28 @@
 	<div class="container">
 		<h2 th:text="${title}"></h2>
 
-	<div class="jumbotron" >
-		<b><p>Total No. of Deaths: <span th:text="${totalDeaths}"></span></p></b>
-	</div>
+		<div class="jumbotron">
+			<p>
+				<b>Total No. of Deaths: <span th:text="${totalDeaths}"></span></b>
+			</p>
+			<p>
+				<b>Last Updated on: <span th:text="${lastUpdate}"></span></b>
+			</p>
+		</div>
 		<table class="table table-striped">
 			<thead class="thead-dark">
 				<tr>
 					<th>Country</th>
 					<th>State</th>
 					<th>Total Deaths</th>
+					<th>Increase from Previous Day</th>
 				</tr>
 			</thead>
 			<tr th:each="record : ${records}">
 				<td th:text="${record.country}"></td>
 				<td th:text="${record.state}"></td>
 				<td th:text="${record.totalDeaths}">0</td>
+				<td th:text="${record.increaseFromPreviousDay}">0</td>
 			</tr>
 		</table>
 	</div>

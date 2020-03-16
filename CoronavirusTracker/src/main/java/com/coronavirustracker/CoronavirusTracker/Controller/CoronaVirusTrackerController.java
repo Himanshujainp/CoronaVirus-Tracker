@@ -25,6 +25,7 @@ public class CoronaVirusTrackerController {
 		model.addAttribute("title", "Coronavirus Tracker");
 		model.addAttribute("records", allStats);
 		model.addAttribute("total", total);
+		model.addAttribute("lastUpdate", dataService.getLastUpdateConfirmation());
 		return "confirmed_cases";
 	}
 
@@ -46,6 +47,7 @@ public class CoronaVirusTrackerController {
 		model.addAttribute("title", "Coronavirus Tracker");
 		model.addAttribute("records", allDeathStats);
 		model.addAttribute("totalDeaths", totalDeaths);
+		model.addAttribute("lastUpdate", dataService.getLastUpdateDeaths());
 		return "death_cases";
 	}
 }

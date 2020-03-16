@@ -23,6 +23,9 @@
 				<b> Total No. of cases: <span th:text="${total}"></span>
 				</b>
 			</p>
+			<p>
+				<b>Last Updated on: <span th:text="${lastUpdate}"></span></b>
+			</p>
 		</div>
 		<table class="table table-striped">
 			<thead class="thead-dark">
@@ -30,12 +33,14 @@
 					<th>Country</th>
 					<th>State</th>
 					<th>Total Cases</th>
+					<th>Increase from Previous Day</th>
 				</tr>
 			</thead>
 			<tr th:each="record : ${records}">
 				<td th:text="${record.country}"></td>
 				<td th:text="${record.state}"></td>
 				<td th:text="${record.totalCases}">0</td>
+				<td th:text="${record.increaseFromPreviousDay}">0</td>
 			</tr>
 		</table>
 	</div>

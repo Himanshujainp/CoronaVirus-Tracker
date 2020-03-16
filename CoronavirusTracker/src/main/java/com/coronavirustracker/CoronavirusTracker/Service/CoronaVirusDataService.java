@@ -6,6 +6,8 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +23,9 @@ import com.coronavirustracker.CoronavirusTracker.Model.DeathStats;
 
 @Service
 public class CoronaVirusDataService {
+
+	LocalDate lastUpdateConfirmation = LocalDate.now();
+	LocalDate lastUpdateDeaths = LocalDate.now();
 
 	private List<ConfirmedStats> allStats = new ArrayList<ConfirmedStats>();
 	private List<DeathStats> allDeathStats = new ArrayList<DeathStats>();
@@ -40,10 +45,22 @@ public class CoronaVirusDataService {
 		Iterable<CSVRecord> records = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(csvBodyReader);
 
 		for (CSVRecord record : records) {
+			try {
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/dd/YY");
+				record.get(formatter.format(lastUpdateConfirmation).toString());
+				break;
+			} catch (Exception e) {
+				lastUpdateConfirmation = lastUpdateConfirmation.minusDays(1);
+			}
+		}
+		for (CSVRecord record : records) {
+
 			ConfirmedStats stats = new ConfirmedStats();
 			stats.setState(record.get("Province/State"));
 			stats.setCountry(record.get("Country/Region"));
 			stats.setTotalCases(Integer.parseInt(record.get(record.size() - 1)));
+			stats.setIncreaseFromPreviousDay((Integer.parseInt(record.get(record.size() - 1)))
+					- (Integer.parseInt(record.get(record.size() - 2))));
 			confirmedStats.add(stats);
 
 		}
@@ -61,15 +78,35 @@ public class CoronaVirusDataService {
 		StringReader csvBodyReader = new StringReader(httpResponse.body());
 		Iterable<CSVRecord> records = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(csvBodyReader);
 
+		
+		for (CSVRecord record : records) {
+			try {
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/dd/YY");
+				record.get(formatter.format(lastUpdateDeaths).toString());
+				break;
+			} catch (Exception e) {
+				lastUpdateDeaths = lastUpdateDeaths.minusDays(1);
+			}
+		}
 		for (CSVRecord record : records) {
 			DeathStats stats = new DeathStats();
 			stats.setState(record.get("Province/State"));
 			stats.setCountry(record.get("Country/Region"));
 			stats.setTotalDeaths(Integer.parseInt(record.get(record.size() - 1)));
+			stats.setIncreaseFromPreviousDay((Integer.parseInt(record.get(record.size() - 1)))
+					- (Integer.parseInt(record.get(record.size() - 2))));
 			deathStats.add(stats);
 
 		}
 		this.allDeathStats = deathStats;
+	}
+
+	public LocalDate getLastUpdateDeaths() {
+		return lastUpdateDeaths;
+	}
+
+	public void setLastUpdateDeaths(LocalDate lastUpdateDeaths) {
+		this.lastUpdateDeaths = lastUpdateDeaths;
 	}
 
 	public List<ConfirmedStats> getAllStats() {
@@ -78,6 +115,14 @@ public class CoronaVirusDataService {
 
 	public List<DeathStats> getAllDeathStats() {
 		return allDeathStats;
+	}
+
+	public LocalDate getLastUpdateConfirmation() {
+		return lastUpdateConfirmation;
+	}
+
+	public void setLastUpdateConfirmation(LocalDate lastUpdateConfirmation) {
+		this.lastUpdateConfirmation = lastUpdateConfirmation;
 	}
 
 }

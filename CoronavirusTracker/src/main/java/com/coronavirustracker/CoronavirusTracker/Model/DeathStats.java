@@ -5,6 +5,15 @@ public class DeathStats {
 	private String state;
 	private String country;
 	private int totalDeaths;
+	private int increaseFromPreviousDay;
+
+	public int getIncreaseFromPreviousDay() {
+		return increaseFromPreviousDay;
+	}
+
+	public void setIncreaseFromPreviousDay(int previousDayDeaths) {
+		this.increaseFromPreviousDay = previousDayDeaths;
+	}
 
 	public String getState() {
 		return state;
@@ -32,7 +41,10 @@ public class DeathStats {
 
 	@Override
 	public String toString() {
-		return "DeathStats [state=" + state + ", country=" + country + ", totalDeaths=" + totalDeaths + "]";
+		return "DeathStats [state=" + state + ", country=" + country + ", totalDeaths=" + totalDeaths
+				+ ", previousDayDeaths=" + increaseFromPreviousDay + "]";
 	}
+
+	
 
 }
